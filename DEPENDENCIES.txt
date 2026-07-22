@@ -1,0 +1,19 @@
+# fractal_coherence v0.1.2 — verified dependency versions
+
+Independent verification environment (2026-07-22):
+
+- Python 3.12.13
+- pydantic 2.13.4
+- pytest 9.0.3 (tests only)
+- SQLite through Python's standard-library `sqlite3`
+
+Pydantic is a runtime dependency of this standalone package. A Fractal port
+must declare it directly if the Pydantic models are retained; its appearance as
+a transitive dependency is not sufficient.
+
+Run from the directory containing `fractal_coherence/`:
+
+    python -m pytest fractal_coherence/test_store.py -v
+    python -m fractal_coherence.demo_protocol
+
+The verified v0.1.2 suite contains 21 tests. See `TEST_OUTPUT.txt`.

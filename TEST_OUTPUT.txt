@@ -1,0 +1,30 @@
+fractal_coherence v0.1.2 — independent verification
+Date: 2026-07-22
+Python: 3.12.13
+Pydantic: 2.13.4
+pytest: 9.0.3
+
+Command:
+  python -m pytest fractal_coherence/test_store.py -v
+
+Result:
+  collected 21 items
+  21 passed in 0.13s
+
+The suite includes adversarial coverage for live-membership overlap, frozen
+target identity, idempotent arrival conflicts, unknown addresses, incomplete
+barriers, wrong epoch and membership identities, out-of-membership directives,
+unknown claim references, reviewer ownership/token checks, stored-state hash
+drift, database membership foreign keys, sparse output, and arrival/review
+timeouts. The one-winner reviewer claim is exercised with two separate SQLite
+connections racing concurrently.
+
+Demo command:
+  python -m fractal_coherence.demo_protocol
+
+Demo result:
+  Protocol demo complete (review output was simulated).
+
+The demo validates protocol flow only. It does not call a model, integrate with
+Fractal's loop, deliver directives to live nodes, or establish performance or
+correctness improvements.
