@@ -105,21 +105,29 @@ def record_source(branch: str, node_row: sqlite3.Row):
 
 
 def main() -> int:
+    # Windows cannot delete files that still hold open handles, so both SQLite
+    # connections must be closed before TemporaryDirectory cleanup runs.
     with tempfile.TemporaryDirectory() as tmp:
         db_path = pathlib.Path(tmp) / 'fractal.db'
 
         seed_conn = sqlite3.connect(db_path)
-        seed_fractal_tree(seed_conn)
+        store = None
+        try:
+            seed_fractal_tree(seed_conn)
 
-        store = CoherenceStore.from_path(db_path)
-        store.init_schema()
+            store = CoherenceStore.from_path(db_path)
+            store.init_schema()
 
-        result = fractal_bridge.run_epoch(
-            fractal_conn=seed_conn,
-            store=store,
-            root_branch='r',
-            record_source=record_source,
-        )
+            result = fractal_bridge.run_epoch(
+                fractal_conn=seed_conn,
+                store=store,
+                root_branch='r',
+                record_source=record_source,
+            )
+        finally:
+            if store is not None:
+                store.close()
+            seed_conn.close()
 
         print('epoch_id     :', result['epoch_id'])
         print('membership   :', result['membership'])
