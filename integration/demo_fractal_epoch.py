@@ -20,10 +20,12 @@ import fractal_bridge
 
 
 def find_fractal_schema() -> pathlib.Path:
-    """Locate Fractal's core/schema.sql from the installed package.
+    """Locate Fractal's core/schema.sql.
 
-    Order: $FRACTAL_SCHEMA override, then the installed `fractal` package.
-    Requires `pip install plasma-fractal` (or a checkout on PYTHONPATH).
+    Order: $FRACTAL_SCHEMA override, then the installed `fractal` package
+    (pip install plasma-fractal), then the vendored snapshot fixture next to
+    this script. The installed package is preferred so the demo tracks the
+    real schema; the snapshot keeps the demo self-contained.
     """
     override = os.environ.get('FRACTAL_SCHEMA')
     if override:
@@ -35,6 +37,10 @@ def find_fractal_schema() -> pathlib.Path:
             return candidate
     except Exception:
         pass
+    snapshot = pathlib.Path(__file__).parent / 'fractal_schema_snapshot.sql'
+    if snapshot.is_file():
+        print('note: using vendored schema snapshot (plasma-fractal not installed)')
+        return snapshot
     raise SystemExit(
         'Could not locate Fractal schema. Install Fractal (pip install '
         'plasma-fractal) or set FRACTAL_SCHEMA=/path/to/fractal/core/schema.sql'
