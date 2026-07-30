@@ -8,3 +8,5 @@ venv/
 *.sqlite
 *.sqlite3
 .DS_Store
+coherence_overseer/demo_state/
+*.bak
