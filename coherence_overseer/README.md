@@ -1,10 +1,18 @@
-# coherence_overseer v0.1
+# coherence_overseer v0.2
 
-Per-action coherence oversight for one bounded agent workflow. Extends the
+Per-action coherence oversight for agent workflows. Extends the
 `fractal_coherence` epoch/barrier data layer with the piece it explicitly did
 not implement: **autonomous violation detection** — fast path by default,
 synchronized review by exception, persistent verified state outside any
 model's context window.
+
+v0.2 adds the **tree layer** (`tree.py`): per-node overseers across a
+hierarchical dotted tree, where a detected `block`/`isolate` violation
+autonomously opens a real synchronized epoch through the v0.1.2 store —
+membership freeze, one canonical `CompactNodeRecord` per node, one-winner
+review claim, cross-branch conflict detection, sparse identity-bound
+directives, atomic release. This is the autonomous-contradiction-detection
+demo the parent README stated did not exist yet.
 
 ## What this demonstrates
 
@@ -43,16 +51,23 @@ Keeping to the same standard as the parent repository:
 
 ## Quick start
 
-Stdlib only — no installs needed (Python 3.11+):
+The single-workflow layer is stdlib only — no installs needed (Python 3.11+):
 
 ```bash
 python -m coherence_overseer.demo
 python -m coherence_overseer.test_overseer     # 13 behavioral tests
-# or, matching the parent repo's tooling:
-python -m pytest coherence_overseer/test_overseer.py -v
 ```
 
-Captured results: `DEMO_OUTPUT.txt`.
+The tree layer uses the parent package's store (needs `pydantic==2.13.4`):
+
+```bash
+python -m coherence_overseer.demo_tree         # hierarchical epoch demo
+python -m coherence_overseer.test_tree         # 8 tree-layer tests
+# or, matching the parent repo's tooling — full suite, 42 tests:
+python -m pytest fractal_coherence/test_store.py coherence_overseer -v
+```
+
+Captured results: `DEMO_OUTPUT.txt` and `DEMO_TREE_OUTPUT.txt`.
 
 ## Intended integration point
 
@@ -77,11 +92,15 @@ defensive model is ever consulted.
 ## Layout
 
 ```text
-contracts.py       Objective/authority contract, compact action updates, verdicts
-state.py           Persistent verified state + hash-chained audit log
-overseer.py        Fast-path checks and escalation
-review.py          Synchronized review barrier + Reviewer protocol
-demo.py            Six-scenario bounded-workflow demo
-test_overseer.py   Behavioral tests (13)
-DEMO_OUTPUT.txt    Captured demo run
+contracts.py          Objective/authority contract, compact action updates, verdicts
+state.py              Persistent verified state + hash-chained audit log
+overseer.py           Fast-path checks and escalation
+review.py             Synchronized review barrier + Reviewer protocol
+tree.py               Tree layer: detected violations open real epochs via the store
+demo.py               Six-scenario bounded-workflow demo (stdlib only)
+demo_tree.py          Hierarchical demo: autonomous epoch + cross-branch reconcile
+test_overseer.py      Behavioral tests (13)
+test_tree.py          Tree-layer tests (8)
+DEMO_OUTPUT.txt       Captured single-workflow demo run
+DEMO_TREE_OUTPUT.txt  Captured tree demo run
 ```

@@ -1,22 +1,37 @@
-# fractal-coherence v0.1.2
+# fractal-coherence v0.2
 
-Standalone protocol prototype for an optional synchronized coherence epoch in
-hierarchical agent trees, designed against Plasma AI's Fractal architecture.
+Standalone protocol prototype for coherence oversight in hierarchical agent
+trees, designed against Plasma AI's Fractal architecture. Two layers:
+
+- `fractal_coherence` — the synchronized **epoch/barrier data layer**
+  (membership freeze, canonical records, one-winner review, sparse
+  directives, atomic release).
+- `coherence_overseer` — the **per-action oversight layer** (fast path by
+  default, autonomous violation detection, persistent verified state,
+  tamper-evident audit), whose `block`/`isolate` detections open real epochs
+  through the data layer (`coherence_overseer/tree.py`).
 
 ## Status
 
-This repository implements and tests the **SQLite epoch/barrier data layer**.
-It is not a Fractal integration and is not production software.
+This repository implements and tests the protocol layers. It is not a Fractal
+integration and is not production software.
 
-- Implemented: membership freeze, bounded canonical records, idempotent
-  arrivals, one-winner reviewer claim, sparse identity-bound directives,
-  release/abort, and timeout supervision.
+- Implemented (v0.1.2 data layer): membership freeze, bounded canonical
+  records, idempotent arrivals, one-winner reviewer claim, sparse
+  identity-bound directives, release/abort, and timeout supervision.
+- Implemented (v0.2 oversight layer): per-action fast path over compact
+  action updates, autonomous detection of authority expansion, constraint
+  and destination violations, protected-data egress, suspected prompt
+  injection, contradiction with verified decisions, and objective drift;
+  persistent hash-chained verified state across sessions; detected
+  violations autonomously opening synchronized epochs with cross-branch
+  conflict directives (`coherence_overseer.demo_tree`).
 - Not implemented: a Fractal loop hook, node waiting/rebinding, directive
-  injection into local REVIEW, or a live model reviewer invocation.
-- The included demo supplies simulated reviewer output; it does not demonstrate
-  autonomous contradiction detection.
-- No claim of lower token use, higher speed, or improved correctness is made
-  without comparative measurements.
+  injection into local REVIEW, or a live model reviewer invocation (the
+  reviewer is deterministic and pluggable; see `coherence_overseer/README.md`).
+- Detection heuristics are deliberately simple; no claim of detection rates
+  against adaptive adversaries, lower token use, higher speed, or improved
+  correctness is made without comparative measurements.
 
 ## Intended mechanism
 
@@ -43,6 +58,14 @@ fractal_coherence/
   test_store.py                   Behavioral and adversarial tests
   demo_protocol.py                Protocol demo with simulated review output
   __init__.py
+coherence_overseer/               Per-action oversight layer (see its README)
+  contracts.py                    Objective/authority contract, compact updates
+  overseer.py                     Fast-path checks and escalation
+  state.py                        Persistent verified state, hash-chained audit
+  review.py                       Review barrier + pluggable Reviewer protocol
+  tree.py                         Detected violations open epochs via the store
+  demo.py / demo_tree.py          Single-workflow and hierarchical demos
+  test_overseer.py / test_tree.py Behavioral tests (13 + 8)
 ```
 
 ## Quick start
